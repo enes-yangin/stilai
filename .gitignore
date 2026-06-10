@@ -28,9 +28,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Claude Code session data (konuşma geçmişi, proje hafızası)
-.claude/
-
 # Veritabanı — kullanıcı verisi içerir
 **/*.db
 **/*.db-journal
