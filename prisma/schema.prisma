@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String     @id @default(cuid())
+  email         String     @unique
+  password      String
+  name          String?
+  profilePhoto  String?    // base64 dataURL — sanal kabin profil fotoğrafı
+  wardrobe      WardrobeItem[]
+  outfits       Outfit[]
+  lastLogin     DateTime   @default(now()) @updatedAt
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model Outfit {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name       String
+  itemIds    String   // JSON array of WardrobeItem id'leri
+  isFavorite Boolean  @default(false)
+  source     String   @default("manual") // "manual" | "ai"
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model WardrobeItem {
+  id            String     @id @default(cuid())
+  userId        String
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name          String
+  frontImage    String     // base64 dataURL
+  backImage     String?
+  originalImage String?
+  isDirty       Boolean    @default(false)
+  wearCount     Int        @default(0)
+  type          String?
+  color         String?
+  style         String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@index([userId])
+}
